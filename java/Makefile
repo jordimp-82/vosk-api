@@ -1,6 +1,8 @@
 KALDI_ROOT ?= $(HOME)/kaldi
+MKL_ROOT = /opt/intel/mkl/
 CFLAGS := -g -O2 -DPIC -fPIC -Wno-unused-function
 CPPFLAGS := -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I$(KALDI_ROOT)/src -I$(KALDI_ROOT)/tools/openfst/include -I../src
+
 
 KALDI_LIBS = \
              ${KALDI_ROOT}/src/online2/kaldi-online2.a \
@@ -21,8 +23,14 @@ KALDI_LIBS = \
              ${KALDI_ROOT}/src/base/kaldi-base.a \
              ${KALDI_ROOT}/tools/openfst/lib/libfst.a \
              ${KALDI_ROOT}/tools/openfst/lib/libfstngram.a \
-             ${KALDI_ROOT}/tools/OpenBLAS/libopenblas.a \
-             -lgfortran
+             -Wl,--start-group \
+             ${MKL_ROOT}/lib/intel64_lin/libmkl_intel_lp64.a \
+             ${MKL_ROOT}/lib/intel64_lin/libmkl_sequential.a \
+             ${MKL_ROOT}/lib/intel64_lin/libmkl_core.a \
+             -Wl,--end-group \
+             -lpthread \
+             ${MKL_ROOT}/lib/intel64_lin/libmkl_core.a \
+	     -lgfortran
 
 all: libvosk_jni.so
 
